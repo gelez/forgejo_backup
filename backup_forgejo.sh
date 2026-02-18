@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# Forgejo backup script
+# Creates full dump using `forgejo dump`, copies to host, rotates old backups
+#
+# Usage:
+#   ./backup-forgejo.sh [OPTIONS]
+#
+# Options:
+#   --container NAME     Docker container name (default: forgejo_serv)
+#   --backup-dir PATH    Host directory for backups (default: /home/gelez/backups)
+#   --config-path PATH   Path to app.ini inside container (default: /data/gitea/conf/app.ini)
+#   --user USER          User to run dump as (default: git)
+#   --keep-days DAYS     Keep backups newer than N days (default: 7)
+#   --monthly-keep       Keep all backups on 1st day of month (default: yes)
+#   -h, --help           Show this help
+
 # Immediatelly fall down with errors if typo in compents found or working pipeline broken or not all vars initialized
 set -euo pipefail
 
@@ -20,7 +35,6 @@ while [[ $# -gt 0 ]]; do
         --user) DUMP_USER="$2"; shift 2 ;;
         --keep-days) KEEP_DAYS="$2"; shift 2 ;;
         --monthly-keep) KEEP_MONTHLY=1; shift ;;
-        --no-monthly-keep) KEEP_MONTHLY=0; shift ;;
         -h|--help)
             grep '^#' "$0" | tail -n +2 | sed 's/^# //'
             exit 0
